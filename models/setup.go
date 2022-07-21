@@ -14,7 +14,13 @@ func ConnectDB() {
 		panic("failed to connect database")
 	}
 
-	db.AutoMigrate(&Book{}, &User{}, &Topic{}, &Question{}, &Answer{}, &Contact{})
+	db.AutoMigrate(&Book{})
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Topic{})
+	db.AutoMigrate(&Topic{}, &Question{})
+	db.AutoMigrate(&Question{})
+	db.AutoMigrate(&Answer{})
+	db.AutoMigrate(&Contact{})
 
 	DB = db
 }
