@@ -6,11 +6,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"not null" json:"username"`
-	Password string `gorm:"not null" json:"password"`
-	Email string `gorm:"not null" json:"email"`
-	Role string `gorm:"not null" json:"role"`
-	Birthday string `gorm:"not null" json:"birthday"`
-	Verified bool `gorm:"not null" json:"verified"`
-	Contacts []Contact `gorm:"foreignkey:UserID" json:"contacts"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email string `gorm:"unique" json:"email"`
+	Role string ` json:"role"`
+	Birthday string `json:"birthday"`
+	Verified bool `json:"verified"`
+	Address string `json:"address"`
 }

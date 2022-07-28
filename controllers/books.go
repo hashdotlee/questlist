@@ -4,11 +4,12 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"dblab/questlist/models"
+	"dblab/questlist/initializers"
 )
 
 func FindBooks (c *gin.Context){
 	var books []models.Book;
-	models.DB.Find(&books)
+	initializers.DB.Find(&books)
 
 	c.JSON(http.StatusOK, gin.H{"data": books})
 }
@@ -30,7 +31,7 @@ func CreateBook(c *gin.Context) {
 
   // Create book
   book := models.Book{Title: input.Title, Author: input.Author}
-  models.DB.Create(&book)
+  initializers.DB.Create(&book)
 
   c.JSON(http.StatusOK, gin.H{"data": book})
 }
@@ -40,7 +41,7 @@ func CreateBook(c *gin.Context) {
 func FindBook(c *gin.Context) {  // Get model if exist
   var book models.Book
 
-  if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+  if err := initializers.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
     c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
     return
   }
@@ -58,7 +59,7 @@ type UpdateBookInput struct {
 func UpdateBook(c *gin.Context) {
   // Get model if exist
   var book models.Book
-  if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+  if err := initializers.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
     c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
     return
   }
@@ -71,7 +72,7 @@ func UpdateBook(c *gin.Context) {
     return
   }
   
-  models.DB.Model(&book).Updates(input)
+  initializers.DB.Model(&book).Updates(input)
 
   c.JSON(http.StatusOK, gin.H{"data": book})
 }
@@ -81,12 +82,12 @@ func UpdateBook(c *gin.Context) {
 func DeleteBook(c *gin.Context) {
   // Get model if exist
   var book models.Book
-  if err := models.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+  if err := initializers.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
     c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
     return
   }
 
-  models.DB.Delete(&book)
+  initializers.DB.Delete(&book)
 
   c.JSON(http.StatusOK, gin.H{"data": true})
 }
