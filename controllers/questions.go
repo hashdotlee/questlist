@@ -40,7 +40,7 @@ func CreateQuestion(c *gin.Context) {
 	question := models.Question{Content: input.Content, UserID: user.ID, Title: input.Title, Topics: topicsDB, }
 	initializers.DB.Create(&question)
 
-	c.JSON(http.StatusOK, gin.H{"data": question})
+	c.JSON(http.StatusCreated, gin.H{"data": question})
 }
 
 func GetQuestions(c *gin.Context) {
@@ -48,6 +48,33 @@ func GetQuestions(c *gin.Context) {
 	initializers.DB.Find(&questions)
 
 	c.JSON(http.StatusOK, gin.H{"data": questions})
+}
+
+type VoteQuestionInput struct {
+	Type models.VoteQuestionType `json:"type" binding:"required"`
+}
+
+
+func VoteQuestion(c *gin.Context) {
+	var question models.Question
+
+	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	var input VoteQuestionInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	var vote models.VoteQuestion
+	vote = models.VoteQuestion{QuestionID: question.ID, Type: input.Type, UserID: c.MustGet("user").(models.User).ID}
+
+	initializers.DB.Create(&vote)
+
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully voted!"})
 }
 
 func GetQuestion(c *gin.Context) {
@@ -112,34 +139,3 @@ func UpdateQuestion(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": question})
 }
-
-func UpvoteQuestion(c *gin.Context) {
-	var question models.Question
-
-	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-		return
-	}
-
-	question.Upvote++
-
-	initializers.DB.Save(&question)
-
-	c.JSON(http.StatusOK, gin.H{"data": question})
-}
-
-func DownvoteQuestion(c *gin.Context) {
-	var question models.Question
-
-	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-		return
-	}
-
-	question.Downvote++
-
-	initializers.DB.Save(&question)
-
-	c.JSON(http.StatusOK, gin.H{"data": question})
-}
-

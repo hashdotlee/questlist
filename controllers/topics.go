@@ -24,7 +24,7 @@ func CreateTopic(c *gin.Context) {
 	topic := models.Topic{Title: input.Title, Description: input.Description}
 	initializers.DB.Create(&topic)
 
-	c.JSON(http.StatusOK, gin.H{"data": topic})
+	c.JSON(http.StatusCreated, gin.H{"data": topic})
 }
 
 type UpdateTopicInput struct {

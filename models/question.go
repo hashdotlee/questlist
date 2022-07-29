@@ -16,8 +16,7 @@ type Question struct {
 	Content string `gorm:"not null" json:"content"`
 	UserID uint `json:"user_id"`
 	Type QuestionType `json:"type"`
-	Upvote int `gorm:"not null" json:"upvote"`
-	Downvote int `gorm:"not null" json:"downvote"`
+	Vote []VoteQuestion `json:"vote"`
 	Answers []*Answer `gorm:"foreignkey:QuestionID" json:"answers"`
 	Topics []Topic `gorm:"many2many:topic_question" json:"topics"`
 }

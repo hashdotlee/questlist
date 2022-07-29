@@ -25,7 +25,7 @@ func CreateAnswer(c *gin.Context) {
 	answer := models.Answer{Content: input.Content, QuestionID: input.QuestionId, UserID: input.UserID}
 	initializers.DB.Create(&answer)
 
-	c.JSON(http.StatusOK, gin.H{"data": answer})
+	c.JSON(http.StatusCreated, gin.H{"data": answer})
 }
 
 func GetAnswers(c *gin.Context) {
@@ -47,12 +47,19 @@ func GetAnswer(c *gin.Context) {
 }
 
 func DeleteAnswer(c *gin.Context) {
+	user := c.MustGet("user").(models.User)
 	var answer models.Answer
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&answer).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
+
+	if user.ID != answer.UserID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You are not allowed to delete this answer!"})
+		return
+	}
+
 
 	initializers.DB.Delete(&answer)
 
@@ -65,12 +72,20 @@ type UpdateAnswerInput struct {
 }
 
 func UpdateAnswer(c *gin.Context) {
+	var user models.User = c.MustGet("user").(models.User)
 	var answer models.Answer
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&answer).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
+
+	if user.ID != answer.UserID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You are not allowed to update this answer!"})
+		return
+	}
+
+
 
 	// Validate input
 	var input UpdateAnswerInput
@@ -101,7 +116,11 @@ func GetAnswerByUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": answers})
 }
 
-func UpvoteAnswer(c *gin.Context) {
+type VoteAnswerInput struct {
+	Type models.VoteAnswerType `json:"type" binding:"required"`
+}
+
+func VoteAnswer(c *gin.Context) {
 	var answer models.Answer
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&answer).Error; err != nil {
@@ -109,27 +128,21 @@ func UpvoteAnswer(c *gin.Context) {
 		return
 	}
 
-	answer.Upvote++
-
-	initializers.DB.Save(&answer)
-
-	c.JSON(http.StatusOK, gin.H{"data": answer})
-}
-
-func DownvoteAnswer(c *gin.Context) {
-	var answer models.Answer
-
-	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&answer).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+	// Validate input
+	var input VoteAnswerInput
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	answer.Downvote++
+	var vote models.VoteAnswer
+	vote = models.VoteAnswer{AnswerID: answer.ID, Type: input.Type, UserID: c.MustGet("user").(models.User).ID}
 
-	initializers.DB.Save(&answer)
+	initializers.DB.Create(&vote)
 
-	c.JSON(http.StatusOK, gin.H{"data": answer})
+	c.JSON(http.StatusOK, gin.H{"message": "Successfully voted!"})
 }
+
 
 func AcceptAnswer(c *gin.Context) {
 	var user models.User = c.MustGet("user").(models.User)
