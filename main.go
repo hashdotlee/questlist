@@ -51,6 +51,6 @@ func main() {
 	  r.DELETE("/topics/:id", middlewares.RequireAdmin, controllers.DeleteTopic)
 	  r.PUT("/topics/:id/update", middlewares.RequireAdmin, controllers.UpdateTopic)
 	  
-    r.Run(os.Getenv("PORT"))
+    r.Run()
 }
 
