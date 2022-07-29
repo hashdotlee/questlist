@@ -12,6 +12,7 @@ type CreateQuestionInput struct {
 	Title  string `json:"title" binding:"required"`
 	Content string `json:"content" binding:"required"`
 	Topics string `json:"topic" binding:"required"`
+	Image string `json:"image"`
 	Type models.QuestionType `json:"type"`
 }
 

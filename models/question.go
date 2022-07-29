@@ -13,6 +13,7 @@ import (
 type Question struct {
 	gorm.Model
 	Title string `gorm:"not null" json:"title"`
+	Image string `json:"image"`
 	Content string `gorm:"not null" json:"content"`
 	UserID uint `json:"user_id"`
 	Type QuestionType `json:"type"`
