@@ -3,7 +3,6 @@ package main
 import (
 	_"net/http"
 	"github.com/gin-gonic/gin"
-	"os"
 	"dblab/questlist/controllers"
 	"dblab/questlist/initializers"
 	"dblab/questlist/middlewares"
