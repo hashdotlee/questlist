@@ -10,12 +10,14 @@ import (
 
 type CreateQuestionInput struct {
 	Title  string `json:"title" binding:"required"`
-	UserID uint `json:"user_id"`
 	Content string `json:"content" binding:"required"`
 	Topics string `json:"topic" binding:"required"`
+	Type models.QuestionType `json:"type"`
 }
 
 func CreateQuestion(c *gin.Context) {
+	var user models.User
+	user = c.MustGet("user").(models.User)
 	// Validate input
 	var input CreateQuestionInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -35,7 +37,7 @@ func CreateQuestion(c *gin.Context) {
 
 
 	// Create question
-	question := models.Question{Content: input.Content, UserID: input.UserID, Title: input.Title, Topics: topicsDB, }
+	question := models.Question{Content: input.Content, UserID: user.ID, Title: input.Title, Topics: topicsDB, }
 	initializers.DB.Create(&question)
 
 	c.JSON(http.StatusOK, gin.H{"data": question})

@@ -35,7 +35,7 @@ type SignupInput struct {
 	}
 
 	// Create user
-	user := models.User{Email: input.Email, Password: string(hashedPassword), Username: input.Username}
+	user := models.User{Email: input.Email, Password: string(hashedPassword), Username: input.Username, Role: models.UserRoleCommon}
 	initializers.DB.Create(&user)
 
 	c.JSON(http.StatusOK, gin.H{"data": user})
@@ -70,6 +70,7 @@ func Login(c *gin.Context){
 		"email": userFromDB.Email,
 		"username": userFromDB.Username,
 		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"role": userFromDB.Role,
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
@@ -83,13 +84,10 @@ func Login(c *gin.Context){
 }
 
 func GetUser(c *gin.Context) {
-	var user models.User
-	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
-		return
-	}
+	user, _ := c.Get("user")
+	myUser := user.(models.User)
+	c.JSON(http.StatusOK, gin.H{"data": myUser})
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
 }
 
 func VerifyUser(c *gin.Context) {
