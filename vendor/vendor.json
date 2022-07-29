@@ -1,0 +1,9 @@
+{
+  "comment": "",
+  "ignore": "test",
+  "package": [],
+  "rootPath": "dblab/questline",
+  "heroku": {
+    "goVersion": "go1.18"
+  }
+}
