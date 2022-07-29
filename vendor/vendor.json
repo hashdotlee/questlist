@@ -54,6 +54,18 @@
 			"revision": ""
 		},
 		{
+			"checksumSHA1": "fdijS3bWi3PCE9gBBKkTW1zc9TY=",
+			"path": "github.com/jinzhu/gorm",
+			"revision": "5c235b72a414e448d1f441aba24a47fd6eb976f4",
+			"revisionTime": "2021-11-20T01:15:37Z"
+		},
+		{
+			"checksumSHA1": "lNDtF/TajctBMzkzu85wBDvySOY=",
+			"path": "github.com/jinzhu/inflection",
+			"revision": "b5281034e75ed100658f8d9d0b2837f3fad4e8b3",
+			"revisionTime": "2021-01-11T02:29:12Z"
+		},
+		{
 			"path": "github.com/json-iterator/go",
 			"revision": ""
 		},
@@ -72,6 +84,18 @@
 			"path": "github.com/ugorji/go/codec",
 			"revision": "e9e4531127d684cf549103d7ed94510afc7305f4",
 			"revisionTime": "2022-05-21T09:03:25Z"
+		},
+		{
+			"checksumSHA1": "oCH3J96RWvO8W4xjix47PModpio=",
+			"path": "golang.org/x/crypto/bcrypt",
+			"revision": "630584e8d5aaa1472863b49679b2d5548d80dcba",
+			"revisionTime": "2022-07-22T15:10:12Z"
+		},
+		{
+			"checksumSHA1": "q+XI9g44wd9mYvf3S5Wo8YZjAus=",
+			"path": "golang.org/x/crypto/blowfish",
+			"revision": "630584e8d5aaa1472863b49679b2d5548d80dcba",
+			"revisionTime": "2022-07-22T15:10:12Z"
 		},
 		{
 			"checksumSHA1": "1KOWevblsY9eGXIwEeVD+UsgK4o=",
