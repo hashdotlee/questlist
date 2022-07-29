@@ -2,19 +2,17 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"dblab/questlist/models"
 	"dblab/questlist/initializers"
 	"net/http"
-	"os"
-	"time"
+	"strings"
 )
 
 type CreateQuestionInput struct {
 	Title  string `json:"title" binding:"required"`
-	UserId string `json:"user_id"`
+	UserID uint `json:"user_id"`
 	Content string `json:"content" binding:"required"`
-	Topic string `json:"topic" binding:"required"`
+	Topics string `json:"topic" binding:"required"`
 }
 
 func CreateQuestion(c *gin.Context) {
@@ -25,8 +23,19 @@ func CreateQuestion(c *gin.Context) {
 		return
 	}
 
+	// split topics
+	topics := strings.Split(input.Topics, ",")
+	for i := 0; i < len(topics); i++ {
+		topics[i] = strings.TrimSpace(topics[i])
+	}
+
+	// get topics from db
+	var topicsDB []models.Topic
+	initializers.DB.Where("name IN (?)", topics).Find(&topicsDB)
+
+
 	// Create question
-	question := models.Question{Content: input.Content, UserId: input.UserId, Title: input.Title, Topic: input.Topic}
+	question := models.Question{Content: input.Content, UserID: input.UserID, Title: input.Title, Topics: topicsDB, }
 	initializers.DB.Create(&question)
 
 	c.JSON(http.StatusOK, gin.H{"data": question})
@@ -88,7 +97,7 @@ func UpdateQuestion(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": question})
 }
 
-func UpVoteQuestion(c *gin.Context) {
+func UpvoteQuestion(c *gin.Context) {
 	var question models.Question
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
@@ -96,14 +105,14 @@ func UpVoteQuestion(c *gin.Context) {
 		return
 	}
 
-	question.UpVotes++
+	question.Upvote++
 
 	initializers.DB.Save(&question)
 
 	c.JSON(http.StatusOK, gin.H{"data": question})
 }
 
-func DownVoteQuestion(c *gin.Context) {
+func DownvoteQuestion(c *gin.Context) {
 	var question models.Question
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
@@ -111,7 +120,7 @@ func DownVoteQuestion(c *gin.Context) {
 		return
 	}
 
-	question.DownVotes++
+	question.Downvote++
 
 	initializers.DB.Save(&question)
 

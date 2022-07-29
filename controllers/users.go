@@ -2,7 +2,6 @@ package controllers
 
  import (
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"net/http"
 	"dblab/questlist/models"
 	"dblab/questlist/initializers"
@@ -104,7 +103,7 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	// Validate input
-	var input SignupInput
+	var input UpdateUserInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

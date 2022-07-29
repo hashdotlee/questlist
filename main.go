@@ -19,14 +19,8 @@ func main() {
 	
 	// Initialize the database.
 
-	r.GET("/books", controllers.FindBooks)
-	  r.POST("/books", controllers.CreateBook)
-  r.GET("/books/:id", controllers.FindBook) // new
-    r.PATCH("/books/:id", controllers.UpdateBook)
-	  r.DELETE("/books/:id", controllers.DeleteBook)
-
 	  r.GET("/answers", controllers.GetAnswers)
-	  r.POST("/answers", middlewares.requiredAuth, controllers.CreateAnswer)
+	  r.POST("/answers", middlewares.RequireAuth, controllers.CreateAnswer)
 	  r.GET("/answers/:id", controllers.GetAnswer)
 	  r.DELETE("/answers/:id", middlewares.RequireAuth, controllers.DeleteAnswer)
 	  r.PATCH("/answers/:id/upvote", middlewares.RequireAuth, controllers.UpvoteAnswer)

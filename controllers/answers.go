@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"net/http"
 	"dblab/questlist/models"
 	"dblab/questlist/initializers"
@@ -10,8 +9,8 @@ import (
 
 type CreateAnswerInput struct {
 	Content string `json:"content" binding:"required"`
-	QuestionId string `json:"question_id" binding:"required"`
-	UserID string `json:"user_id"`
+	QuestionId uint `json:"question_id" binding:"required"`
+	UserID uint `json:"user_id"`
 }
 
 func CreateAnswer(c *gin.Context) {
@@ -23,7 +22,7 @@ func CreateAnswer(c *gin.Context) {
 	}
 
 	// Create answer
-	answer := models.Answer{Content: input.Content, QuestionID: input.QuestionId, UserId: input.UserId}
+	answer := models.Answer{Content: input.Content, QuestionID: input.QuestionId, UserID: input.UserID}
 	initializers.DB.Create(&answer)
 
 	c.JSON(http.StatusOK, gin.H{"data": answer})
@@ -62,7 +61,7 @@ func DeleteAnswer(c *gin.Context) {
 
 type UpdateAnswerInput struct {
 	Content string `json:"content" binding:"required"`
-	UserId string `json:"user_id"`	
+	UserID uint `json:"user_id"`	
 }
 
 func UpdateAnswer(c *gin.Context) {
@@ -81,7 +80,7 @@ func UpdateAnswer(c *gin.Context) {
 	}
 
 	answer.Content = input.Content
-	answer.UserId = input.UserId
+	answer.UserID = input.UserID
 
 	initializers.DB.Save(&answer)
 
@@ -110,7 +109,7 @@ func UpvoteAnswer(c *gin.Context) {
 		return
 	}
 
-	answer.Upvotes++
+	answer.Upvote++
 
 	initializers.DB.Save(&answer)
 
@@ -125,7 +124,7 @@ func DownvoteAnswer(c *gin.Context) {
 		return
 	}
 
-	answer.Downvotes++
+	answer.Downvote++
 
 	initializers.DB.Save(&answer)
 
@@ -133,7 +132,7 @@ func DownvoteAnswer(c *gin.Context) {
 }
 
 func AcceptAnswer(c *gin.Context) {
-	var user models.User = c.Get("user").(models.User)
+	var user models.User = c.MustGet("user").(models.User)
 	var answer models.Answer
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&answer).Error; err != nil {
@@ -141,7 +140,7 @@ func AcceptAnswer(c *gin.Context) {
 		return
 	}	
 
-	if user.Id == answer.UserId {
+	if user.ID == answer.UserID {
 		answer.Verified = true
 		initializers.DB.Save(&answer)
 		c.JSON(http.StatusOK, gin.H{"data": true})
