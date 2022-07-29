@@ -62,7 +62,15 @@ func GetQuestion(c *gin.Context) {
 }
 
 func DeleteQuestion(c *gin.Context) {
+	user := c.MustGet("user").(models.User)
 	var question models.Question
+	
+	// check if user is creator of question
+	initializers.DB.Where("id = ?", c.Param("id")).First(&question) // get question
+	if question.UserID != user.ID {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "You are not the creator of this question!"})
+		return
+	}
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})

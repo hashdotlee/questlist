@@ -42,7 +42,7 @@ type SignupInput struct {
 	}
 
 	// Create user
-	user := models.User{Email: input.Email, Password: string(hashedPassword), Username: input.Username, Role: models.UserRoleCommon}
+	user = models.User{Email: input.Email, Password: string(hashedPassword), Username: input.Username, Role: models.UserRoleCommon}
 	initializers.DB.Create(&user)
 
 	c.JSON(http.StatusCreated, gin.H{"data": user})
