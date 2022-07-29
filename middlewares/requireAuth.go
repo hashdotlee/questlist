@@ -12,7 +12,7 @@ import (
 
 func RequireAuth(c *gin.Context) {
 	// Get the token from cookie and check if it's valid
-	token, err := c.Cookie("token")
+	token, err := c.Cookie("Authorization")
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "You must be logged in!"})
 		c.Abort()

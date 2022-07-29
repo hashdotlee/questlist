@@ -3,6 +3,7 @@ package main
 import (
 	_"net/http"
 	"github.com/gin-gonic/gin"
+	"os"
 	"dblab/questlist/controllers"
 	"dblab/questlist/initializers"
 	"dblab/questlist/middlewares"
@@ -50,6 +51,6 @@ func main() {
 	  r.DELETE("/topics/:id", middlewares.RequireAdmin, controllers.DeleteTopic)
 	  r.PUT("/topics/:id/update", middlewares.RequireAdmin, controllers.UpdateTopic)
 	  
-    r.Run()
+    r.Run(os.Getenv("PORT"))
 }
 

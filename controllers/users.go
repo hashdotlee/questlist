@@ -4,8 +4,11 @@ package controllers
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"dblab/questlist/models"
+	"time"
+	"os"
 	"dblab/questlist/initializers"
 	"golang.org/x/crypto/bcrypt"
+	"github.com/golang-jwt/jwt/v4"
  )
 
 
@@ -61,7 +64,22 @@ func Login(c *gin.Context){
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": userFromDB})
+	// generate token
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id": userFromDB.ID,
+		"email": userFromDB.Email,
+		"username": userFromDB.Username,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
+	})
+
+	tokenString, err := token.SignedString([]byte(os.Getenv("SECRET_KEY")))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": tokenString})
+
 }
 
 func GetUser(c *gin.Context) {
