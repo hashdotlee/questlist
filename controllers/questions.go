@@ -72,7 +72,7 @@ func DeleteQuestion(c *gin.Context) {
 	
 	// check if user is creator of question
 	if question.UserID != user.ID {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "You are not the creator of this question!"})
+		c.JSON(http.StatusForbidden, gin.H{"error": "You are not the creator of this question!"})
 		return
 	}
 
@@ -86,10 +86,17 @@ type UpdateQuestionInput struct {
 }
 
 func UpdateQuestion(c *gin.Context) {
+	user := c.MustGet("user").(models.User)
 	var question models.Question
 
 	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	// check if user is creator of question
+	if question.UserID != user.ID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You are not the creator of this question!"})
 		return
 	}
 

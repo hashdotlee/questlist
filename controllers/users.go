@@ -37,7 +37,7 @@ type SignupInput struct {
 	// Check if email already exists
 	var user models.User
 	if err := initializers.DB.Where("Email = ?", input.Email).First(&user).Error; err == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists!"})
+		c.JSON(http.StatusForbidden, gin.H{"error": "Email already exists!"})
 		return
 	}
 
