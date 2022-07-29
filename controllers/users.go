@@ -34,11 +34,18 @@ type SignupInput struct {
 		return
 	}
 
+	// Check if email already exists
+	var user models.User
+	if err := initializers.DB.Where("Email = ?", input.Email).First(&user).Error; err == nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Email already exists!"})
+		return
+	}
+
 	// Create user
 	user := models.User{Email: input.Email, Password: string(hashedPassword), Username: input.Username, Role: models.UserRoleCommon}
 	initializers.DB.Create(&user)
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.JSON(http.StatusCreated, gin.H{"data": user})
 }
 
 type LoginInput struct {
