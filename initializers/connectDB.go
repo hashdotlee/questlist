@@ -1,9 +1,8 @@
 package initializers 
 
 import (
-	"github.com/jinzhu/gorm"
-	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/driver/postgres"
 	"os"
 )
 
@@ -19,14 +18,9 @@ func ConnectDB() {
 	dbname := os.Getenv("POSTGRES_DB")
 
 	// config dns
-	dns := postgres.New(postgres.Config{
-		Host:     host,
-		Port:     port,
-		User:     user,
-		Password: password,
-		Database: dbname,
-	})
+	dsn := "host=" + host + " port=" + port + " user=" + user + " password=" + password + " dbname=" + dbname
 
+	// connect to db
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
 	if err != nil {
