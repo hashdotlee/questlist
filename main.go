@@ -26,7 +26,6 @@ func main() {
 		AllowOriginFunc: func(origin string) bool {
 			return origin == "https://github.com"
 		},
-		MaxAge: 12 * time.Hour,
 	}))
 	// Initialize the database.
 
