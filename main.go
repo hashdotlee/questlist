@@ -4,6 +4,7 @@ import (
 	_"net/http"
 	"github.com/gin-gonic/gin"
 	"dblab/questlist/controllers"
+	"github.com/gin-contrib/cors"
 	"dblab/questlist/initializers"
 	"dblab/questlist/middlewares"
 )
@@ -47,7 +48,8 @@ func main() {
 	  r.GET("/topics/:id", controllers.GetTopic)
 	  r.DELETE("/topics/:id", middlewares.RequireAdmin, controllers.DeleteTopic)
 	  r.PUT("/topics/:id/update", middlewares.RequireAdmin, controllers.UpdateTopic)
-	  
-    r.Run()
-}
+
+	  r.Use(cors.Default())
+	  r.Run()
+  }
 

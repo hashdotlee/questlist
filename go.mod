@@ -5,6 +5,7 @@ go 1.13
 require (
 	github.com/Bowery/prompt v0.0.0-20190916142128-fa8279994f75 // indirect
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185 // indirect
+	github.com/gin-contrib/cors v1.4.0 // indirect
 	github.com/gin-gonic/gin v1.8.1
 	github.com/githubnemo/CompileDaemon v1.4.0 // indirect
 	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
