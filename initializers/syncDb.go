@@ -10,4 +10,6 @@ func SyncDb(){
 	DB.AutoMigrate(&models.Topic{}, &models.Question{})
 	DB.AutoMigrate(&models.Question{})
 	DB.AutoMigrate(&models.Answer{})
+	DB.AutoMigrate(&models.VoteAnswer{})
+	DB.AutoMigrate(&models.VoteQuestion{})
 }
