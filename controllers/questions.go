@@ -92,8 +92,8 @@ func GetQuestion(c *gin.Context) {
 
 	// create struct for return data
 	type Data struct {
-		Question
-		User models.Question
+		Question models.Question
+		User models.User
 	}
 
 	// Set user to question
