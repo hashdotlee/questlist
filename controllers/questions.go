@@ -38,7 +38,7 @@ func CreateQuestion(c *gin.Context) {
 
 
 	// Create question
-	question := models.Question{Content: input.Content, UserID: user.ID, Title: input.Title, Topics: topicsDB, }
+	question := models.Question{Content: input.Content, Image: input.Image, UserID: user.ID, Title: input.Title, Topics: topicsDB, }
 	initializers.DB.Create(&question)
 
 	c.JSON(http.StatusCreated, gin.H{"data": question})
@@ -86,7 +86,22 @@ func GetQuestion(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": question})
+	// Find user who created question
+	var user models.User
+	initializers.DB.Where("id = ?", question.UserID).First(&user)
+
+	// create struct for return data
+	type Data struct {
+		Question
+		User models.Question
+	}
+
+	// Set user to question
+	var data Data
+	data.Question = question
+	data.User = user
+
+	c.JSON(http.StatusOK, gin.H{"data": data})
 }
 
 func DeleteQuestion(c *gin.Context) {
