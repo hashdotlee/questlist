@@ -78,6 +78,12 @@ func VoteQuestion(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully voted!"})
 }
 
+// create struct to return user 
+type NestedUserReturn struct {
+	ID uint `json:"id"`
+	Username string `json:"username"`
+}
+
 func GetQuestion(c *gin.Context) {
 	var question models.Question
 
@@ -90,16 +96,20 @@ func GetQuestion(c *gin.Context) {
 	var user models.User
 	initializers.DB.Where("id = ?", question.UserID).First(&user)
 
+	var userReturn NestedUserReturn
+	userReturn.ID = user.ID
+	userReturn.Username = user.Username
+
 	// create struct for return data
 	type Data struct {
 		Question models.Question
-		User models.User
+		User NestedUserReturn 
 	}
 
 	// Set user to question
 	var data Data
 	data.Question = question
-	data.User = user
+	data.User = userReturn 
 
 	c.JSON(http.StatusOK, gin.H{"data": data})
 }
@@ -112,7 +122,7 @@ func DeleteQuestion(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
-	
+
 	// check if user is creator of question
 	if question.UserID != user.ID {
 		c.JSON(http.StatusForbidden, gin.H{"error": "You are not the creator of this question!"})
