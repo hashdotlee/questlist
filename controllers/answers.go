@@ -102,11 +102,26 @@ func UpdateAnswer(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": answer})
 }
 
+type AnswerWithUser struct {
+	models.Answer
+	User NestedUserReturn `json:"user"`
+}
+
 func GetAnswerByQuestion(c *gin.Context) {
 	var answers []models.Answer
 	initializers.DB.Where("question_id = ?", c.Param("id")).Find(&answers)
 
-	c.JSON(http.StatusOK, gin.H{"data": answers})
+	var answerWithUser []AnswerWithUser
+	for _, answer := range answers {
+		var user models.User
+		initializers.DB.Where("id = ?", answer.UserID).First(&user)
+		answerWithUser = append(answerWithUser, AnswerWithUser{Answer: answer, User: NestedUserReturn{
+			ID: user.ID,
+			Username: user.Username,
+		}})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": answerWithUser})
 }
 
 func GetAnswerByUser(c *gin.Context) {

@@ -87,10 +87,11 @@ type NestedUserReturn struct {
 func GetQuestion(c *gin.Context) {
 	var question models.Question
 
-	if err := initializers.DB.Where("id = ?", c.Param("id")).Preload("Answers").Preload("Topics").First(&question).Error; err != nil {
+	if err := initializers.DB.Where("id = ?", c.Param("id")).Preload("Topics").First(&question).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
+
 	// create struct for return data
 	type Data struct {
 		Question models.Question `json:"question"`

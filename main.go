@@ -40,6 +40,7 @@ func main() {
 	r.GET("/questions", controllers.GetQuestions)
 	r.POST("/questions", middlewares.RequireAuth, controllers.CreateQuestion)
 	r.GET("/questions/:id", controllers.GetQuestion)
+	r.GET("/questions/:id/answers", controllers.GetAnswerByQuestion)
 	r.DELETE("/questions/:id", middlewares.RequireAuth, controllers.DeleteQuestion)
 	r.POST("/questions/:id/upvote", middlewares.RequireAuth, controllers.VoteQuestion)
 	r.PUT("/questions/:id/update", middlewares.RequireAuth, controllers.UpdateQuestion)
