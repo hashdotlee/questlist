@@ -115,10 +115,11 @@ func GetAnswerByQuestion(c *gin.Context) {
 	for _, answer := range answers {
 		var user models.User
 		initializers.DB.Where("id = ?", answer.UserID).First(&user)
-		answerWithUser = append(answerWithUser, AnswerWithUser{Answer: answer, User: NestedUserReturn{
+		myAnswer := AnswerWithUser{answer, NestedUserReturn{
 			ID: user.ID,
 			Username: user.Username,
-		}})
+		}}
+		answerWithUser = append(answerWithUser, myAnswer)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": answerWithUser})
