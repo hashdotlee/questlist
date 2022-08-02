@@ -38,7 +38,7 @@ func CreateQuestion(c *gin.Context) {
 
 
 	// Create question
-	question := models.Question{Content: input.Content, Image: input.Image, UserID: user.ID, Title: input.Title, Topics: topicsDB, }
+	question := models.Question{Content: input.Content, Image: input.Image, UserID: user.ID, Title: input.Title, Topics: topicsDB, Type: input.Type }
 	initializers.DB.Create(&question)
 
 	c.JSON(http.StatusCreated, gin.H{"data": question})
