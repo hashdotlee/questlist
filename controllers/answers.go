@@ -10,10 +10,10 @@ import (
 type CreateAnswerInput struct {
 	Content string `json:"content" binding:"required"`
 	QuestionId uint `json:"question_id" binding:"required"`
-	UserID uint `json:"user_id"`
 }
 
 func CreateAnswer(c *gin.Context) {
+	var user models.User = c.MustGet("user").(models.User)
 	// Validate input
 	var input CreateAnswerInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -22,7 +22,7 @@ func CreateAnswer(c *gin.Context) {
 	}
 
 	// Create answer
-	answer := models.Answer{Content: input.Content, QuestionID: input.QuestionId, UserID: input.UserID}
+	answer := models.Answer{Content: input.Content, QuestionID: input.QuestionId, UserID: user.ID}
 	initializers.DB.Create(&answer)
 
 	c.JSON(http.StatusCreated, gin.H{"data": answer})
