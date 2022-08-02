@@ -91,6 +91,16 @@ func GetQuestion(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
+	// create struct for return data
+	type Data struct {
+		Question models.Question `json:"question"`
+		User NestedUserReturn `json:"user"`
+	}
+
+	if(question.Type == models.QuestionTypePrivate) {
+		c.JSON(http.StatusOK, gin.H{"data": Data{Question: question}})
+		return
+	}
 
 	// Find user who created question
 	var user models.User
@@ -99,12 +109,6 @@ func GetQuestion(c *gin.Context) {
 	var userReturn NestedUserReturn
 	userReturn.ID = user.ID
 	userReturn.Username = user.Username
-
-	// create struct for return data
-	type Data struct {
-		Question models.Question `json:"question"`
-		User NestedUserReturn `json:"user"`
-	}
 
 	// Set user to question
 	var data Data
