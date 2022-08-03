@@ -18,6 +18,8 @@ type User struct {
 	Email string `gorm:"unique" json:"email"`
 	Role UserRole ` json:"role"`
 	Phone string `json:"phone"`
+	VoteAnswer []VoteAnswer `json:"voteAnswer"`
+	VoteQuestion []VoteQuestion `json:"voteQuestion"`
 	Birthday string `json:"birthday"`
 	Verified bool `json:"verified"`
 	Address string `json:"address"`
