@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
+	"time"
 )
 
 type VoteAnswerType int
@@ -12,7 +12,9 @@ const (
 )
 
 type VoteAnswer struct {
-	gorm.Model
+	ID uint `gorm:"autoIncrement:true" json:"id"`
+	CreatedAt time.Time `gorm:"autoCreateTime:true" json:"created_at"`
+	UpdatedAt time.Time `gorm:"autoUpdateTime:true" json:"updated_at"`
 	AnswerID uint `gorm:"primaryKey" json:"answer_id"`
 	UserID uint `json:"user_id" gorm:"primaryKey"`
 	Type VoteAnswerType `json:"type"`
