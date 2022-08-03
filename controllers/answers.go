@@ -197,7 +197,7 @@ func DeleteVoteAnswer(c *gin.Context) {
 	var vote models.VoteAnswer
 	var user models.User = c.MustGet("user").(models.User)
 
-	if err := initializers.DB.Where("question_id = ? && user_id = ?", c.Param("id"), user.ID).First(&vote).Error; err != nil {
+	if err := initializers.DB.Where("question_id = ? AND user_id = ?", c.Param("id"), user.ID).First(&vote).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
