@@ -44,11 +44,36 @@ func CreateQuestion(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": question})
 }
 
+type QuestionStats struct {
+	NumOfVote int `json:"num_of_vote"`
+	NumOfAnswer int `json:"num_of_answer"`
+}
+
+type QuestionWithStats struct {
+	models.Question
+	Stats QuestionStats `json:"stats"`
+}
+
 func GetQuestions(c *gin.Context) {
 	var questions []models.Question
 	initializers.DB.Find(&questions)
 
-	c.JSON(http.StatusOK, gin.H{"data": questions})
+	var questionsWithStats []QuestionWithStats
+
+	// count votes for each question
+	for i := 0; i < len(questions); i++ {
+		var votes []models.VoteQuestion
+		initializers.DB.Where("question_id = ?", questions[i].ID).Find(&votes)
+		var answers []models.Answer
+		initializers.DB.Where("question_id = ?", questions[i].ID).Find(&answers)
+
+		var stats QuestionStats
+		stats.NumOfVote = len(votes)
+		stats.NumOfAnswer = len(answers)
+		questionsWithStats = append(questionsWithStats, QuestionWithStats{Question: questions[i], Stats: stats})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": questionsWithStats})
 }
 
 type VoteQuestionInput struct {
