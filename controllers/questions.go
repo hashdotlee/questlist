@@ -6,6 +6,7 @@ import (
 	"dblab/questlist/initializers"
 	"net/http"
 	"strings"
+	"sort"
 )
 
 type CreateQuestionInput struct {
@@ -74,6 +75,11 @@ func GetQuestions(c *gin.Context) {
 		stats.NumOfAnswer = len(answers)
 		questionsWithStats = append(questionsWithStats, QuestionWithStats{Question: questions[i], Stats: stats})
 	}
+
+	// sort questions by votes
+	sort.Slice(questionsWithStats, func(i, j int) bool {
+		return questionsWithStats[i].Stats.NumOfVote > questionsWithStats[j].Stats.NumOfVote
+	})
 
 	c.JSON(http.StatusOK, gin.H{"data": questionsWithStats})
 }
