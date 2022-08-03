@@ -62,13 +62,15 @@ func GetQuestions(c *gin.Context) {
 
 	// count votes for each question
 	for i := 0; i < len(questions); i++ {
-		var votes []models.VoteQuestion
-		initializers.DB.Where("question_id = ?", questions[i].ID).Find(&votes)
+		var upvotes []models.VoteQuestion
+		initializers.DB.Where("question_id = ? AND type = ?", questions[i].ID, 1).Find(&upvotes)
+		var downvotes []models.VoteQuestion
+		initializers.DB.Where("question_id = ? AND type = ?", questions[i].ID, 2).Find(&downvotes)
 		var answers []models.Answer
 		initializers.DB.Where("question_id = ?", questions[i].ID).Find(&answers)
 
 		var stats QuestionStats
-		stats.NumOfVote = len(votes)
+		stats.NumOfVote = len(upvotes) - len(downvotes)
 		stats.NumOfAnswer = len(answers)
 		questionsWithStats = append(questionsWithStats, QuestionWithStats{Question: questions[i], Stats: stats})
 	}
