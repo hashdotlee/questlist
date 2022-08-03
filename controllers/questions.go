@@ -57,7 +57,7 @@ type QuestionWithStats struct {
 
 func GetQuestions(c *gin.Context) {
 	var questions []models.Question
-	initializers.DB.Find(&questions)
+	initializers.DB.Preload("Vote").Find(&questions)
 
 	var questionsWithStats []QuestionWithStats
 
