@@ -151,9 +151,12 @@ func VoteAnswer(c *gin.Context) {
 	var vote models.VoteAnswer
 	vote = models.VoteAnswer{AnswerID: answer.ID, Type: input.Type, UserID: c.MustGet("user").(models.User).ID}
 
-	if err:= initializers.DB.Create(&vote).Error; err != nil {
-		c.JSON(http.StatusConflict, gin.H{"error": "May be you have already voted for this question!"})
-		return
+	// Check if vote exists and update it
+	if err := initializers.DB.Where("answer_id = ? AND user_id = ?", answer.ID, c.MustGet("user").(models.User).ID).First(&vote).Error; err == nil {
+		vote.Type = input.Type
+		initializers.DB.Save(&vote)
+	} else {
+		initializers.DB.Create(&vote)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully voted!"})
