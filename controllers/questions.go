@@ -188,3 +188,22 @@ func GetQuestionVotes(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": votes})
 }
 
+func DeleteVoteQuestion(c *gin.Context) {
+	user := c.MustGet("user").(models.User)
+	var vote models.VoteQuestion
+
+	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&vote).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	// check if user is creator of vote question
+	if vote.UserID != user.ID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "You are not the creator of this vote question!"})
+		return
+	}
+
+	initializers.DB.Delete(&vote)
+
+	c.JSON(http.StatusOK, gin.H{"data": vote})
+}
