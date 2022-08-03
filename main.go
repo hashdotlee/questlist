@@ -37,7 +37,7 @@ func main() {
 	r.PATCH("/answers/:id/accept", middlewares.RequireAuth, controllers.AcceptAnswer)
 	r.PUT("/answers/:id", middlewares.RequireAuth,controllers.UpdateAnswer)
 	r.GET("/answers/:id/votes", controllers.GetAnswerVotes)
-	r.DELETE("/answers/:id/votes", middlewares.RequireAuth, controllers.DeleteVoteAnswer)
+	r.DELETE("/answers/:id/vote", middlewares.RequireAuth, controllers.DeleteVoteAnswer)
 
 	r.GET("/questions", controllers.GetQuestions)
 	r.POST("/questions", middlewares.RequireAuth, controllers.CreateQuestion)

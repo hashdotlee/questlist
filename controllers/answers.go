@@ -195,14 +195,15 @@ func GetAnswerVotes(c *gin.Context) {
 
 func DeleteVoteAnswer(c *gin.Context) {
 	var vote models.VoteAnswer
+	var user models.User = c.MustGet("user").(models.User)
 
-	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&vote).Error; err != nil {
+	if err := initializers.DB.Where("question_id = ? && user_id = ?", c.Param("id"), user.ID).First(&vote).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
 		return
 	}
 
 	// check if user is the owner of the vote
-	if vote.UserID != c.MustGet("user").(models.User).ID {
+	if vote.UserID != user.ID {
 		c.JSON(http.StatusForbidden, gin.H{"error": "You are not allowed to delete this vote!"})
 		return
 	}
