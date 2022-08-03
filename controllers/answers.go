@@ -151,7 +151,10 @@ func VoteAnswer(c *gin.Context) {
 	var vote models.VoteAnswer
 	vote = models.VoteAnswer{AnswerID: answer.ID, Type: input.Type, UserID: c.MustGet("user").(models.User).ID}
 
-	initializers.DB.Create(&vote)
+	if err:= initializers.DB.Create(&vote).Error; err != nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "May be you have already voted for this question!"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully voted!"})
 }

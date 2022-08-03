@@ -13,8 +13,8 @@ const (
 
 type VoteAnswer struct {
 	gorm.Model
-	AnswerID uint `gorm:"not null" json:"answer_id"`
-	UserID uint `json:"user_id" gorm:"not null"`
+	AnswerID uint `gorm:"primaryKey" json:"answer_id"`
+	UserID uint `json:"user_id" gorm:"primaryKey"`
 	Type VoteAnswerType `json:"type"`
 }
 
