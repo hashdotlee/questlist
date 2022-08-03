@@ -16,6 +16,6 @@ type Answer struct {
 	UserID uint `json:"user_id"`
 	Content string `gorm:"not null" json:"content"`
 	IsCorrect bool `gorm:"not null" json:"is_correct"`
-	Vote []VoteAnswer `json:"vote"`
+	Vote []VoteAnswer `json:"vote" gorm:"foreignkey:AnswerID"`
 	Verified bool `json:"verified"`
 }

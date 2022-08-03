@@ -12,11 +12,11 @@ const (
 )
 
 type VoteQuestion struct {
-	ID uint `gorm:"autoIncrement:true" json:"id"`
+	ID 	  int64     `json:"id"`
 	CreatedAt time.Time `gorm:"autoCreateTime:true" json:"created_at"`
 	UpdatedAt time.Time `gorm:"autoUpdateTime:true" json:"updated_at"`
 	QuestionID uint `gorm:"primaryKey;autoIncrement:false" json:"answer_id"`
-	UserID uint `json:"user_id" gorm:"primaryKey:autoIncrement:false"`
+	UserID uint `json:"user_id" gorm:"primaryKey;autoIncrement:false"`
 	Type VoteQuestionType `json:"type"`
 }
 

@@ -73,7 +73,7 @@ func VoteQuestion(c *gin.Context) {
 	var vote models.VoteQuestion
 	vote = models.VoteQuestion{QuestionID: question.ID, Type: input.Type, UserID: c.MustGet("user").(models.User).ID}
 
-	if err:= initializers.DB.Create(&vote).Error; err != nil {
+	if err := initializers.DB.Create(&vote).Error; err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": "May be you have already voted for this question!"})
 		return
 	}
@@ -173,3 +173,18 @@ func UpdateQuestion(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": question})
 }
+
+func GetQuestionVotes(c *gin.Context) {
+	var question models.Question
+
+	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&question).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	var votes []models.VoteQuestion
+	initializers.DB.Where("question_id = ?", question.ID).Find(&votes)
+
+	c.JSON(http.StatusOK, gin.H{"data": votes})
+}
+

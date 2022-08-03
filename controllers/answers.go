@@ -178,3 +178,18 @@ func AcceptAnswer(c *gin.Context) {
 	}
 
 }
+
+func GetAnswerVotes(c *gin.Context) {
+	var answer models.Answer
+
+	if err := initializers.DB.Where("id = ?", c.Param("id")).First(&answer).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Record not found!"})
+		return
+	}
+
+	var votes []models.VoteAnswer
+	initializers.DB.Where("answer_id = ?", answer.ID).Find(&votes)
+
+	c.JSON(http.StatusOK, gin.H{"data": votes})
+}
+
