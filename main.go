@@ -18,7 +18,7 @@ func init(){
 func main() {
 	r := gin.Default()
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"https://hashdotlee.github.io", "http://localhost:3000"},
+		AllowOrigins:     []string{"https://hashdotlee.cyou", "http://localhost:3000"},
 		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
