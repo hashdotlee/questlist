@@ -68,7 +68,6 @@ func DeleteAnswer(c *gin.Context) {
 
 type UpdateAnswerInput struct {
 	Content string `json:"content" binding:"required"`
-	UserID uint `json:"user_id"`	
 }
 
 func UpdateAnswer(c *gin.Context) {
@@ -85,8 +84,6 @@ func UpdateAnswer(c *gin.Context) {
 		return
 	}
 
-
-
 	// Validate input
 	var input UpdateAnswerInput
 	if err := c.ShouldBindJSON(&input); err != nil {
@@ -95,7 +92,7 @@ func UpdateAnswer(c *gin.Context) {
 	}
 
 	answer.Content = input.Content
-	answer.UserID = input.UserID
+	answer.UserID = user.ID 
 
 	initializers.DB.Save(&answer)
 
