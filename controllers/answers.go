@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"dblab/questlist/models"
+	"sort"
 	"dblab/questlist/initializers"
 )
 
@@ -99,9 +100,11 @@ func UpdateAnswer(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": answer})
 }
 
+
 type AnswerWithUser struct {
 	models.Answer
 	User NestedUserReturn `json:"user"`
+	NumOfVote int `json:"num_of_vote"`
 }
 
 func GetAnswerByQuestion(c *gin.Context) {
@@ -112,12 +115,20 @@ func GetAnswerByQuestion(c *gin.Context) {
 	for _, answer := range answers {
 		var user models.User
 		initializers.DB.Where("id = ?", answer.UserID).First(&user)
-		myAnswer := AnswerWithUser{answer, NestedUserReturn{
+		var upvotes []models.VoteAnswer
+		initializers.DB.Where("answer_id = ? AND type = ?", answer.ID, 1).First(&upvotes)
+		var downvotes []models.VoteAnswer
+		initializers.DB.Where("answer_id = ? AND type = ?", answer.ID, 2).First(&downvotes)
+		answerWithUser = append(answerWithUser, AnswerWithUser{Answer: answer, User: NestedUserReturn{
 			ID: user.ID,
 			Username: user.Username,
-		}}
-		answerWithUser = append(answerWithUser, myAnswer)
+		}, NumOfVote: len(upvotes) - len(downvotes)})
 	}
+
+	// Sort by num_of_vote
+	sort.Slice(answerWithUser, func(i, j int) bool {
+		return answerWithUser[i].NumOfVote > answerWithUser[j].NumOfVote
+	})
 
 	c.JSON(http.StatusOK, gin.H{"data": answerWithUser})
 }
