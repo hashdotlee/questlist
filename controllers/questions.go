@@ -35,7 +35,7 @@ func CreateQuestion(c *gin.Context) {
 
 	// get topics from db
 	var topicsDB []models.Topic
-	initializers.DB.Where("name IN (?)", topics).Find(&topicsDB)
+	initializers.DB.Where("title IN (?)", topics).Find(&topicsDB)
 
 
 	// Create question
